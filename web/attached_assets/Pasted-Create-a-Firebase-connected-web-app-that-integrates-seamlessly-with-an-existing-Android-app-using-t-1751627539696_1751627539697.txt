@@ -1,0 +1,80 @@
+Create a Firebase-connected web app that integrates seamlessly with an existing Android app, using the same Firebase Realtime Database structure.
+
+☁️ Firebase Integration:
+Use provided firebaseConfig to connect to the same Firebase project
+
+Realtime Database must be used (not Firestore) — exactly like in Android
+
+🔐 Authentication (Email + Password):
+Register user with email, password, and unique username
+
+Save profile in /users/{uid} with fields: username, email, createdAt
+
+Do not change the UID logic — UID must match Android UIDs (from Firebase Auth)
+
+After login, fetch the user profile
+
+💬 Chat (Must match Android app logic):
+Chats are stored under:
+
+bash
+Копировать
+Редактировать
+/chats/{combinedUid1_uid2}/messages/{messageId}
+Each message has:
+
+json
+Копировать
+Редактировать
+{
+  "messageId": "...",
+  "senderId": "...",
+  "text": "...",
+  "timestamp": ...
+}
+Chat ID is a combination of two user IDs, sorted alphabetically or by UID order
+
+Chat must show all messages in order
+
+New messages are pushed using push() to /chats/{chatId}/messages
+
+🔘 Button Logic:
+Button	Logic
+Register	Creates Firebase Auth account, checks username uniqueness
+Login	Authenticates user, loads profile
+Send Message	Pushes to /chats/{chatId}/messages with senderId, text, timestamp
+Load Messages	Loads last N messages from same path
+Start Chat	Generates chatId = uid1_uid2, checks if exists, creates if not
+
+🌐 Pages:
+Login/Register Page: handles Auth
+
+Chat Page: shows friend list, select a user to start chat, real-time message list
+
+User Profile Page (optional): shows info about the current user
+
+⚙️ Replit Requirements:
+Must use firebase JS SDK (npm install firebase)
+
+Must work inside Replit (no server required)
+
+Should include:
+
+firebase.js config file
+
+React components: AuthForm, Chat, FriendList
+
+Chat logic compatible with Realtime DB schema
+
+TailwindCSS for styling (optional)
+
+✅ Expected Behavior:
+Users from Android and Web see the same chats, messages, and data
+
+No duplication or mismatch of IDs
+
+All logic (chat routing, IDs, message schema) stays consistent with current database
+
+BONUS:
+
+Add aiState field per chat (active, processing) — allow toggling it from Web UI

@@ -1,0 +1,106 @@
+Extend the existing Firebase-connected web app (which already uses Firebase Auth and Realtime Database-compatible chat) by adding a full trip planning module with an interactive map of Armenia, integrated into the same Firebase project.
+
+🌍 MAP & REGION INTERFACE:
+Load an interactive map of Armenia using Leaflet.js or MapLibre
+
+Represent marzes (regions) of Armenia as visual areas or images overlaid on the map
+
+When a marz is clicked, show a list or dots of cities in that region
+
+Clicking a city adds it to the current trip draft
+
+Each city must be stored by its name (e.g. "Vanadzor", "Gyumri")
+
+🧳 TRIP PLANNING FUNCTIONALITY:
+Allow user to create a trip with:
+
+Trip name
+
+List of selected cities (in order)
+
+Optional description or tags
+
+Show selected cities on the map as markers or icons
+
+Save the trip under:
+
+bash
+Копировать
+Редактировать
+/trips/{uid}/{tripId}
+or
+
+bash
+Копировать
+Редактировать
+/trips/{tripId} with "ownerId": uid
+Each trip should include:
+
+json
+Копировать
+Редактировать
+{
+  "tripId": "...",
+  "ownerId": "uid123",
+  "title": "My Trip to North Armenia",
+  "cities": ["Vanadzor", "Spitak", "Stepanavan"],
+  "status": "draft" | "finalized",
+  "createdAt": timestamp
+}
+🧠 OPTIONAL: AI TRIP OPTIMIZATION
+Button: “Optimize Trip” → runs a mock AI function (or Firebase Function) that suggests a better order of cities
+
+Allows user to accept or ignore suggestion
+
+🗺️ ROUTE FINALIZATION:
+Button: “Finalize Route”
+
+Shows a connected path between cities on the map
+
+Sets trip status to "finalized"
+
+📲 UI PAGES TO ADD:
+Page	Features
+/create-trip	Input for name, region selection, city selection via map
+/trip/:tripId	Displays trip info, cities, map, route line, optimization button
+/my-trips	Lists all trips by logged-in user
+
+📍 MAP INTEGRATION REQUIREMENTS:
+Use Leaflet or MapLibre (free and works on Replit)
+
+Optional: use a static image of Armenia overlaid as a custom layer
+
+Cities can be placed as predefined coordinates or SVG points
+
+Allow click-to-add and drag-to-reorder cities
+
+💾 DATA SAVING RULES (MUST BE COMPATIBLE WITH ANDROID APP):
+Trips must be saved to the same Firebase project
+
+All city data must match Android app naming convention
+
+Trips must be readable by Android app as-is (no extra nesting)
+
+🔘 BUTTON LOGIC:
+“Create New Trip” → initializes empty trip object
+
+“Click Marz” → loads cities for that region
+
+“Click City” → adds city to trip draft
+
+“Save Trip” → saves trip object to Firebase
+
+“Optimize Trip” → reorders cities via function
+
+“Finalize Route” → shows route on map and updates status
+
+🔧 Project must include:
+TripCreate.jsx, TripView.jsx, TripList.jsx
+
+Map.jsx component with interactivity
+
+Hook or service to handle all /trips/ Firebase logic
+
+Integration into the main app with React Router
+
+TailwindCSS or similar for styling

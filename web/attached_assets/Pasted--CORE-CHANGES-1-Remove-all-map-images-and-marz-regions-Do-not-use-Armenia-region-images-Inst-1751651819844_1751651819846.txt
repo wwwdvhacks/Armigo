@@ -1,0 +1,188 @@
+🧱 CORE CHANGES:
+1. 🚫 Remove all map images and marz regions
+Do not use Armenia region images
+
+Instead, show a list of popular cities like:
+
+Yerevan
+
+Gyumri
+
+Vanadzor
+
+Dilijan
+
+Goris
+
+Stepanavan
+
+Each city is a clickable button (adds to current trip)
+
+2. 🔍 Add search field for finding other cities
+Input: user types city name
+
+If valid city (in pre-defined list), it can be added to trip
+
+Show error if city not found
+
+3. 🧑‍🤝‍🧑 Add Friends System (by username)
+Input field: search for user by username
+
+Show “Add Friend” button if user found
+
+Save friend relation under:
+
+bash
+Копировать
+Редактировать
+/friends/{uid}/sent/{targetUid}
+/friends/{targetUid}/received/{uid}
+Add “Accept/Reject” buttons for received requests
+
+If accepted:
+
+Add both users to each other’s /friends/{uid}/list/{friendUid}
+
+4. 💬 Group Chat (with friends)
+Button: “Create Group Chat”
+
+Modal to select friends
+
+Give group name
+
+Create under:
+
+bash
+Копировать
+Редактировать
+/groupChats/{groupId}
+Fields:
+
+json
+Копировать
+Редактировать
+{
+  "groupName": "Trip to Lori",
+  "members": ["uid1", "uid2"],
+  "createdAt": timestamp
+}
+Each group has:
+
+Chat stored in /groupChats/{groupId}/messages/{messageId}
+
+Message structure:
+
+json
+Копировать
+Редактировать
+{
+  "senderId": "...",
+  "text": "...",
+  "timestamp": ...
+}
+🚗 5. “Cars Available” System (with booking logic)
+Add a new section/page: /cars
+
+Car Example Format:
+json
+Копировать
+Редактировать
+/cars/{carId} = {
+  "driverId": "uid123",
+  "driverName": "Aram",
+  "carModel": "Toyota Prius",
+  "seatsAvailable": 3,
+  "status": "available" | "booked",
+  "currentTripId": null,
+  "availableAfter": null
+}
+Features:
+Show list of available cars (status === "available")
+
+Button: “Send Request” to driver → creates message in /carRequests/{driverId}
+
+Driver can accept/decline request:
+
+If accepted:
+
+Set car’s status = "booked"
+
+Set currentTripId = tripId
+
+Set availableAfter = ending timestamp
+
+Remove car from “available” list
+
+After availableAfter is passed → car is automatically visible again (status = "available")
+
+UI:
+Show:
+
+Driver name
+
+Car model
+
+Seats
+
+“Message Driver” button (opens chat or modal)
+
+Show pending requests for drivers in dashboard
+
+🧳 6. Trip Planner (Updated)
+Remove map
+
+Show buttons for cities
+
+Selected cities shown in order
+
+Button: “Save Trip”
+
+Stored at /trips/{uid}/{tripId} or /trips/{tripId} with ownerId
+
+Optional field: Assign Car to Trip (if booking approved)
+
+✅ REQUIRED COMPONENTS:
+Components:
+Component	Description
+AuthForm	Handles registration & login
+CitySelector	Shows popular cities as buttons + search field
+TripCreate	Form for creating a trip (trip name + cities + assign car)
+TripList	Lists saved trips per user
+Friends	Friend search + add/accept + list
+GroupChatCreate	Select friends + create group chat
+GroupChatView	Show chat messages
+CarsAvailable	List available cars + request buttons
+CarRequestsInbox	Driver’s view: see and accept/decline requests
+
+Backend Firebase Paths:
+Feature	Path in Firebase
+Users	/users/{uid}
+Trips	/trips/{tripId}
+Friends	/friends/{uid}/...
+Group Chats	/groupChats/{groupId}
+Cars	/cars/{carId}
+Car Requests	/carRequests/{driverId}/{requestId}
+
+📌 BUTTON LOGIC SUMMARY
+Button	Action
+“Add City”	Adds city to selectedCities array
+“Search City”	If valid → add to trip, else show error
+“Save Trip”	Saves current trip to Firebase
+“Send Friend Request”	Adds entry under friends/sent and received
+“Accept Friend”	Moves friend to friends list
+“Create Group Chat”	Creates group, stores in DB
+“Send Message to Group”	Adds message to /groupChats/{groupId}/messages
+“Request Car”	Sends request to driver under /carRequests
+“Accept Booking” (Driver)	Marks car as booked, sets status and trip
+“Trip Ended” (Automatic)	Changes car back to available after availableAfter timestamp
+
+✅ Final Notes:
+All data must be stored in Firebase Realtime DB
+
+All users, chats, friends, cars, and trips must follow same UID and structure as Android app
+
+Project must work on Replit with Firebase SDK
+
+Use React Router for navigation
+
+Use TailwindCSS or similar for styling
